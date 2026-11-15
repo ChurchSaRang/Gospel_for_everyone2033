@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f3f6f8;
+  --foreground: #122d42;
+  --primary: #075b8f;
+  --primary-strong: #06446a;
+  --accent: #f07835;
+  --gold: #ffc078;
+  --panel: #ffffff;
+  --muted: #526977;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-dm-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-dm-sans), sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: #b8e3f1;
+  color: #122d42;
+}
+
+:focus-visible {
+  outline: 3px solid #f07835;
+  outline-offset: 3px;
+}
+
+.container-shell {
+  @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+.section-title {
+  @apply text-3xl text-[#122d42] sm:text-4xl;
+  font-family: var(--font-display), Georgia, serif;
+}
+
+.section-subtitle {
+  @apply mt-4 max-w-2xl text-lg leading-8 text-[#526977];
+}
+
+.card-surface {
+  @apply rounded-lg border border-[#dce5eb] bg-white p-6;
+  box-shadow: 0 12px 36px rgba(18, 45, 66, 0.06);
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center rounded-md bg-[#075b8f] px-6 py-3 font-semibold text-white transition hover:bg-[#06446a];
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center rounded-md border border-[#b8cbd7] bg-white px-6 py-3 font-semibold text-[#122d42] transition hover:bg-[#eaf2f6];
+}
+
+.btn-gold {
+  @apply inline-flex items-center justify-center rounded-md bg-[#f07835] px-6 py-3 font-semibold text-white transition hover:bg-[#d85e20];
+}
+
+.btn-light {
+  @apply inline-flex items-center justify-center rounded-md border border-white/50 bg-white/10 px-6 py-3 font-semibold text-white transition hover:bg-white/20;
+}
+
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
+  letter-spacing: 0;
+}
+
+details>summary::-webkit-details-marker {
+  display: none;
+}
