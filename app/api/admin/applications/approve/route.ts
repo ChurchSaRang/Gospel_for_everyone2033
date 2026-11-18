@@ -1,15 +1,12 @@
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { ADMIN_SESSION_COOKIE, verifyAdminSession } from '@/lib/admin-auth';
+import { authorizeAdminApi } from '@/lib/admin-auth';
 import { hasSentSelectionEmail, sendApplicantEmail } from '@/lib/applicant-email';
 import { prisma } from '@/lib/prisma';
 
 export async function POST(request: Request) {
     try {
-        const cookieStore = await cookies();
-        if (!verifyAdminSession(cookieStore.get(ADMIN_SESSION_COOKIE)?.value)) {
-            return NextResponse.json({ message: 'Administrator authentication is required.' }, { status: 401 });
-        }
+        const authorization = await authorizeAdminApi(['APPLICATION_REVIEWER']);
+        if (authorization.response) return authorization.response;
         const { applicationId } = await request.json();
         if (typeof applicationId !== 'string' || !applicationId) {
             return NextResponse.json({ message: 'Application ID is required.' }, { status: 400 });

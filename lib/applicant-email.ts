@@ -1,7 +1,6 @@
 import nodemailer from 'nodemailer';
 import { prisma } from '@/lib/prisma';
 
-const senderAddress = process.env.EMAIL_FROM || 'sarangchurch162@gmail.com';
 const providerName = 'smtp:gmail';
 
 type ApplicantName = {
@@ -165,8 +164,11 @@ export async function sendApplicantEmail({
     let errorMessage: string | undefined;
 
     try {
-        const user = process.env.EMAIL_USER || senderAddress;
+        const from = process.env.EMAIL_FROM?.trim();
+        const user = process.env.EMAIL_USER?.trim();
         const password = process.env.EMAIL_PASS;
+        if (!from) throw new Error('EMAIL_FROM is not configured in the server environment.');
+        if (!user) throw new Error('EMAIL_USER is not configured in the server environment.');
         if (!password) throw new Error('EMAIL_PASS is not configured. Add a Gmail app password to the server environment.');
 
         const transporter = nodemailer.createTransport({
@@ -180,7 +182,7 @@ export async function sendApplicantEmail({
         });
 
         await transporter.sendMail({
-            from: process.env.EMAIL_FROM || `Gospel for Everyone Admissions <${senderAddress}>`,
+            from,
             to: recipient,
             subject: message.subject,
             text: message.text,

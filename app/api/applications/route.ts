@@ -3,6 +3,7 @@ import { Country } from 'country-state-city';
 import { applicationSchema } from '@/lib/application-schema';
 import { sendApplicantEmail } from '@/lib/applicant-email';
 import { prisma } from '@/lib/prisma';
+import { authorizeAdminApi } from '@/lib/admin-auth';
 
 export async function POST(request: Request) {
     try {
@@ -94,6 +95,9 @@ function calculateAge(dob: string) {
 }
 
 export async function GET() {
+    const authorization = await authorizeAdminApi(['APPLICATION_REVIEWER']);
+    if (authorization.response) return authorization.response;
+
     const applications = await prisma.application.findMany({
         include: {
             applicant: true,

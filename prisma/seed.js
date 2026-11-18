@@ -1,9 +1,21 @@
 import crypto from 'node:crypto';
 
+function hashPassword(value) {
+    const salt = crypto.randomBytes(16);
+    const hash = crypto.scryptSync(value, salt, 64);
+    return `scrypt$${salt.toString('hex')}$${hash.toString('hex')}`;
+}
+
 async function main() {
+    const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+    const adminPassword = process.env.ADMIN_INITIAL_PASSWORD;
+    if (!adminEmail || !adminPassword || adminPassword.length < 12) {
+        throw new Error('Set ADMIN_EMAIL and an ADMIN_INITIAL_PASSWORD of at least 12 characters before seeding.');
+    }
+
     const { PrismaClient } = await import('@prisma/client');
     const prisma = new PrismaClient();
-    const passwordHash = crypto.createHash('sha256').update('Admin@2026').digest('hex');
+    const passwordHash = hashPassword(adminPassword);
 
     await prisma.siteSetting.upsert({
         where: { key: 'programme-support-fee' },
@@ -20,15 +32,15 @@ async function main() {
     await prisma.batch.upsert({
         where: { code: 'BATCH-A' },
         update: {
-            startDate: new Date('2027-03-07T00:00:00.000Z'),
-            endDate: new Date('2027-03-28T00:00:00.000Z'),
+            startDate: new Date('2027-03-05T00:00:00.000Z'),
+            endDate: new Date('2027-04-03T00:00:00.000Z'),
         },
         create: {
             code: 'BATCH-A',
             name: 'Batch A',
             capacity: 300,
-            startDate: new Date('2027-03-07T00:00:00.000Z'),
-            endDate: new Date('2027-03-28T00:00:00.000Z'),
+            startDate: new Date('2027-03-05T00:00:00.000Z'),
+            endDate: new Date('2027-04-03T00:00:00.000Z'),
             assignmentNumber: 0,
             participantCount: 0,
         },
@@ -63,15 +75,22 @@ async function main() {
     });
 
     await prisma.adminUser.upsert({
-        where: { email: 'admin@gospletoeveryone.org' },
-        update: { passwordHash, role: 'SUPER_ADMIN', name: 'Super Admin' },
+        where: { email: adminEmail },
+        update: { passwordHash, role: 'SUPER_ADMIN', name: 'Super Admin', isActive: true },
         create: {
-            email: 'admin@gospletoeveryone.org',
+            email: adminEmail,
             name: 'Super Admin',
             passwordHash,
             role: 'SUPER_ADMIN',
         },
     });
+
+    if (adminEmail !== 'admin@gospletoeveryone.org') {
+        await prisma.adminUser.updateMany({
+            where: { email: 'admin@gospletoeveryone.org' },
+            data: { isActive: false },
+        });
+    }
 
     console.log('Seed completed');
 }

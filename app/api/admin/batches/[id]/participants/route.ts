@@ -1,7 +1,6 @@
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { ADMIN_SESSION_COOKIE, verifyAdminSession } from '@/lib/admin-auth';
+import { authorizeAdminApi } from '@/lib/admin-auth';
 import { prisma } from '@/lib/prisma';
 
 const participantCountSchema = z.object({
@@ -12,10 +11,8 @@ export async function PATCH(
     request: Request,
     context: { params: Promise<{ id: string }> },
 ) {
-    const cookieStore = await cookies();
-    if (!verifyAdminSession(cookieStore.get(ADMIN_SESSION_COOKIE)?.value)) {
-        return NextResponse.json({ message: 'Administrator authentication is required.' }, { status: 401 });
-    }
+    const authorization = await authorizeAdminApi(['BATCH_COORDINATOR']);
+    if (authorization.response) return authorization.response;
 
     let body: unknown;
     try {

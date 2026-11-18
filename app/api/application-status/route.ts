@@ -21,7 +21,7 @@ export async function POST(request: Request) {
 
         const normalizedCode = code.trim();
         const confirmationCode = await prisma.confirmationCode.findUnique({
-            where: { code: normalizedCode },
+            where: { code: normalizedCode, revokedAt: null },
             include: {
                 application: {
                     include: { applicant: true },

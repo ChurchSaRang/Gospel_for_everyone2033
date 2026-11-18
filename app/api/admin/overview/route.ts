@@ -1,13 +1,10 @@
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { ADMIN_SESSION_COOKIE, verifyAdminSession } from '@/lib/admin-auth';
+import { authorizeAdminApi } from '@/lib/admin-auth';
 import { prisma } from '@/lib/prisma';
 
 export async function GET() {
-    const cookieStore = await cookies();
-    if (!verifyAdminSession(cookieStore.get(ADMIN_SESSION_COOKIE)?.value)) {
-        return NextResponse.json({ message: 'Administrator authentication is required.' }, { status: 401 });
-    }
+    const authorization = await authorizeAdminApi();
+    if (authorization.response) return authorization.response;
 
     const [totalApplications, pendingPayments, successfulPayments, assignedApplicants, recentApplications] = await Promise.all([
         prisma.application.count(),

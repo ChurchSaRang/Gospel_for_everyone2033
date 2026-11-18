@@ -1,6 +1,7 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# dependencies
+# ==========================================
+# DEPENDENCIES
+# ==========================================
 /node_modules
 /.pnp
 .pnp.*
@@ -10,32 +11,73 @@
 !.yarn/releases
 !.yarn/versions
 
-# testing
+# ==========================================
+# TESTING
+# ==========================================
 /coverage
 
-# next.js
+# ==========================================
+# NEXT.JS
+# ==========================================
 /.next/
 /out/
 
-# production
+# ==========================================
+# PRODUCTION BUILD
+# ==========================================
 /build
 
-# misc
-.DS_Store
-*.pem
+# ==========================================
+# ENVIRONMENT VARIABLES
+# ==========================================
+.env*
+!.env.example
 
-# debug
+# ==========================================
+# DATABASE FILES
+# ==========================================
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# ==========================================
+# LOGS
+# ==========================================
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
-
-# vercel
+# ==========================================
+# VERCEL
+# ==========================================
 .vercel
 
-# typescript
+# ==========================================
+# TYPESCRIPT
+# ==========================================
 *.tsbuildinfo
 next-env.d.ts
+
+# ==========================================
+# SYSTEM FILES
+# ==========================================
+.DS_Store
+Thumbs.db
+*.pem
+
+# ==========================================
+# IDE AND EDITOR FILES
+# ==========================================
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# ==========================================
+# TEMPORARY FILES
+# ==========================================
+*.tmp
+*.bak

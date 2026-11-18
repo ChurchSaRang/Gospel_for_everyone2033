@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { authorizeAdminApi } from '@/lib/admin-auth';
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
+        const authorization = await authorizeAdminApi(['APPLICATION_REVIEWER']);
+        if (authorization.response) return authorization.response;
+
         const { id } = await params;
         const application = await prisma.application.findUnique({
             where: { id },
