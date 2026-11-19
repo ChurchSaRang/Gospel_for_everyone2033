@@ -36,23 +36,23 @@ Production uses PostgreSQL; development uses SQLite. The schemas share the same 
 - `prisma/schema.prisma` is the SQLite development schema.
 - `prisma/postgres/schema.prisma` and its own migrations are for production PostgreSQL.
 
-Create a PostgreSQL database (for example, in Supabase). In the Vercel project, add these environment variables for the Production environment and a separate database for Preview:
+Create a PostgreSQL database (for example, in Neon). In the Vercel project, add these environment variables for the Production environment and a separate database or Neon branch for Preview:
 
-- `DATABASE_URL`: PostgreSQL runtime connection string. A Supabase pooler URL can be used for serverless runtime access.
-- `DIRECT_URL`: direct PostgreSQL connection string for Prisma migrations.
+- `DATABASE_URL`: pooled PostgreSQL runtime connection string for app requests.
+- `DATABASE_URL_UNPOOLED`: direct PostgreSQL connection string for Prisma migrations.
 - `NEXTAUTH_SECRET`: unique random secret of at least 32 characters.
 - `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USER`, `EMAIL_PASS`, and `EMAIL_FROM` if sending email.
 - `PAYMENT_PROVIDER`, `NOWPAYMENTS_API_KEY`, `NOWPAYMENTS_IPN_SECRET`, `PAYMENT_PUBLIC_URL`, `SUPPORT_FEE_AMOUNT`, and `SUPPORT_FEE_CURRENCY` if enabling payments.
 
-Vercel uses `npm run build:production`. It generates the PostgreSQL Prisma client, deploys the PostgreSQL migrations, and then builds Next.js. The first deployment requires valid database URLs. Configure a separate Preview database so Preview builds do not migrate Production.
+Vercel uses `npm run build:production`. It generates the PostgreSQL Prisma client and builds Next.js; it does not apply migrations. Apply migrations to the intended database with `npm run prisma:migrate:production` before deploying code that depends on the new schema. Keep Preview isolated from Production.
 
-To create the first production administrator after deployment, temporarily set the Production `DATABASE_URL`, `DIRECT_URL`, `ADMIN_EMAIL`, and `ADMIN_INITIAL_PASSWORD` in your private local `.env` file, then run:
+To create the first production administrator after migration, set `DATABASE_URL`, `DATABASE_URL_UNPOOLED`, `ADMIN_EMAIL`, and `ADMIN_INITIAL_PASSWORD` in your private environment, then run:
 
 ```powershell
 npm run db:seed:production
 ```
 
-The seed command updates the configured administrator’s password using scrypt and disables the old built-in development administrator. It also seeds the programme settings and batches. Back up your local `.env` before temporarily changing its database URLs, then restore it immediately after seeding. Never add production credentials to Vercel just for seeding, commit them, or send them in chat.
+The seed command updates the configured administrator’s password using scrypt and disables the old built-in development administrator. It also seeds the programme settings and batches. Do not overwrite your SQLite `.env` with production URLs; use a separate private env file or environment variables for production seeding. Never commit production credentials or send them in chat.
 
 ## Checks
 
