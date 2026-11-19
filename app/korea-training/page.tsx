@@ -4,7 +4,7 @@ import { getPublicCohorts } from '@/lib/cohort-data';
 
 const learningJourney = [
     {
-        image: '/public%20pictures/digital%20evangelism%20one.jfif',
+        image: '/public%20pictures/digital%20evangelism%20one.jpg',
         alt: 'A digital evangelism training session with church leaders',
         step: 'Start with people',
         description: 'Read the moment with empathy: listen to real questions, understand local context and build trust before choosing a platform.',
@@ -31,7 +31,7 @@ export default async function KoreaTrainingPage() {
         <main>
             <section className="relative isolate overflow-hidden bg-[#102a43] py-16 text-white sm:py-24">
                 <div className="absolute inset-0 opacity-30">
-                    <Image src="/public%20pictures/digital%20evangelism%20one.jfif" alt="" fill priority sizes="100vw" className="object-cover" />
+                    <Image src="/public%20pictures/digital%20evangelism%20one.jpg" alt="" fill priority sizes="100vw" className="object-cover" />
                 </div>
                 <div className="absolute inset-0 bg-[#102a43]/75" />
                 <div className="container-shell relative">

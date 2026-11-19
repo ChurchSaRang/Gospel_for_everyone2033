@@ -6,22 +6,22 @@ import { useEffect, useState } from 'react';
 
 const slides = [
     {
-        image: '/public%20pictures/hero%20section%20backgroun%20image%20one.jfif',
+        image: '/public%20pictures/hero%20section%20backgroun%20image%20one.jpg',
         alt: 'Church leaders gathered for a global mission assembly',
         label: 'One message. Every people.',
     },
     {
-        image: '/public%20pictures/hero%20section%20backgroun%20image%20two.jfif',
+        image: '/public%20pictures/hero%20section%20backgroun%20image%20two.jpg',
         alt: 'The worship auditorium at SaRang Church in Seoul',
         label: 'Rooted in the local church.',
     },
     {
-        image: '/public%20pictures/hero%20section%20backgroun%20image%20three.jfif',
+        image: '/public%20pictures/hero%20section%20backgroun%20image%20three.jpg',
         alt: 'Participants listening together at a church gathering',
         label: 'A global family in one calling.',
     },
     {
-        image: '/public%20pictures/hero%20section%20backgroun%20image%20four.jfif',
+        image: '/public%20pictures/hero%20section%20backgroun%20image%20four.jpg',
         alt: 'Speakers at the 2025 WEA Seoul General Assembly',
         label: 'A vision carried together.',
     },

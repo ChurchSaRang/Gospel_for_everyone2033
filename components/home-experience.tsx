@@ -6,7 +6,7 @@ import { galleryItems, partners } from '@/lib/site-data';
 
 const trainingStories = [
     {
-        image: '/public%20pictures/digital%20evangelism%20one.jfif',
+        image: '/public%20pictures/digital%20evangelism%20one.jpg',
         alt: 'Christian leaders presenting a digital evangelism training session',
         number: '01',
         title: 'Listen before you post',

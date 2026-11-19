@@ -2,20 +2,64 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { navItems } from '@/lib/site-data';
+import translationLanguages from '@/lib/translation-languages.json';
+
+const languageChoiceStorageKey = 'gte-language-choice';
 
 export function SiteHeader() {
     const [menuOpen, setMenuOpen] = useState(false);
+    const [suggestedLanguage, setSuggestedLanguage] = useState<(typeof translationLanguages)[number] | null>(null);
+
+    useEffect(() => {
+        if (window.localStorage.getItem(languageChoiceStorageKey)) return;
+
+        let cancelled = false;
+        fetch('/api/language-suggestion', { cache: 'no-store' })
+            .then(async (response) => {
+                if (!response.ok) {
+                    throw new Error(`Language suggestion request failed (${response.status}).`);
+                }
+
+                const result: unknown = await response.json();
+                if (typeof result !== 'object' || result === null || !('languageCode' in result)) {
+                    throw new Error('Language suggestion response has an invalid shape.');
+                }
+
+                const { languageCode } = result;
+                if (languageCode !== null && typeof languageCode !== 'string') {
+                    throw new Error('Language suggestion response contains an invalid language code.');
+                }
+
+                const language = translationLanguages.find((item) => item.code === languageCode) ?? null;
+                if (!cancelled && language && !window.localStorage.getItem(languageChoiceStorageKey)) {
+                    setSuggestedLanguage(language);
+                }
+            })
+            .catch((error: unknown) => {
+                console.error('Could not load a suggested site language.', error);
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, []);
 
     function translateCurrentPage(language: string) {
         if (!language) return;
 
+        window.localStorage.setItem(languageChoiceStorageKey, language);
         const translationUrl = new URL('https://translate.google.com/translate');
         translationUrl.searchParams.set('sl', 'auto');
         translationUrl.searchParams.set('tl', language);
         translationUrl.searchParams.set('u', window.location.href);
         window.location.assign(translationUrl.toString());
+    }
+
+    function continueInEnglish() {
+        window.localStorage.setItem(languageChoiceStorageKey, 'en');
+        setSuggestedLanguage(null);
     }
 
     return (
@@ -51,41 +95,62 @@ export function SiteHeader() {
                     {menuOpen ? 'Close menu' : 'Menu'}
                 </button>
 
-                <label className="sr-only" htmlFor="site-language">Translate this site</label>
-                <select
-                    id="site-language"
-                    defaultValue=""
-                    onChange={(event) => translateCurrentPage(event.target.value)}
-                    className="h-10 max-w-28 rounded-md border border-[#b8cbd7] bg-white px-2 text-sm font-semibold text-[#122d42] sm:max-w-36 sm:px-3"
-                >
-                    <option value="" disabled>Language</option>
-                    <option value="ar">Arabic</option>
-                    <option value="zh-CN">Chinese (Simplified)</option>
-                    <option value="zh-TW">Chinese (Traditional)</option>
-                    <option value="nl">Dutch</option>
-                    <option value="fr">French</option>
-                    <option value="de">German</option>
-                    <option value="ha">Hausa</option>
-                    <option value="hi">Hindi</option>
-                    <option value="id">Indonesian</option>
-                    <option value="it">Italian</option>
-                    <option value="ja">Japanese</option>
-                    <option value="ko">Korean</option>
-                    <option value="ms">Malay</option>
-                    <option value="ne">Nepali</option>
-                    <option value="fa">Persian</option>
-                    <option value="pt">Portuguese</option>
-                    <option value="ru">Russian</option>
-                    <option value="es">Spanish</option>
-                    <option value="sw">Swahili</option>
-                    <option value="tl">Tagalog</option>
-                    <option value="th">Thai</option>
-                    <option value="tr">Turkish</option>
-                    <option value="uk">Ukrainian</option>
-                    <option value="ur">Urdu</option>
-                    <option value="vi">Vietnamese</option>
-                    <option value="yo">Yoruba</option>
-                </select>
+                <div className="relative inline-flex h-10 max-w-40 items-center rounded-lg border border-[#d1d5db] bg-white transition-colors hover:border-[#9ca3af] focus-within:border-blue-600 focus-within:ring-4 focus-within:ring-blue-600/15">
+                    <svg
+                        className="pointer-events-none absolute left-3 text-gray-600"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                    >
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="2" y1="12" x2="22" y2="12" />
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                    </svg>
+                    <select
+                        id="site-language"
+                        aria-label="Select Language"
+                        defaultValue=""
+                        onChange={(event) => translateCurrentPage(event.target.value)}
+                        className="h-full w-full cursor-pointer appearance-none rounded-lg bg-transparent py-2 pl-10 pr-3 text-sm text-gray-800 outline-none"
+                    >
+                        <option value="" disabled>Select Language</option>
+                        {translationLanguages.map((language) => (
+                            <option key={language.code} value={language.code}>{language.flag} {language.name}</option>
+                        ))}
+                    </select>
+                </div>
+
+                {suggestedLanguage && (
+                    <aside
+                        aria-live="polite"
+                        aria-labelledby="language-suggestion-title"
+                        className="absolute right-4 top-full z-50 mt-2 w-[min(28rem,calc(100vw-2rem))] rounded-lg border border-[#dce5eb] bg-white p-4 text-[#122d42] shadow-xl sm:right-6"
+                    >
+                        <p id="language-suggestion-title" className="text-sm leading-6">
+                            Based on your approximate location, would you like to view this page in {suggestedLanguage.name}?
+                            You can also continue in English.
+                        </p>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                            <button
+                                type="button"
+                                onClick={() => translateCurrentPage(suggestedLanguage.code)}
+                                className="btn-primary px-3 py-2 text-sm"
+                            >
+                                Switch to {suggestedLanguage.name}
+                            </button>
+                            <button type="button" onClick={continueInEnglish} className="btn-secondary px-3 py-2 text-sm">
+                                Continue in English
+                            </button>
+                        </div>
+                    </aside>
+                )}
 
                 {menuOpen && (
                     <nav id="site-menu" aria-label="Main menu" className="absolute right-4 top-[calc(100%+0.25rem)] z-50 grid w-[min(20rem,calc(100vw-2rem))] gap-1 rounded-lg border border-[#dce5eb] bg-white p-2 shadow-xl sm:right-6 lg:right-8">

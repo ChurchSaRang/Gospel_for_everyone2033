@@ -107,11 +107,11 @@ export const newsArticles = [
 ];
 
 export const galleryItems = [
-    { title: 'A global church gathered in Seoul', image: '/public%20pictures/hero%20section%20backgroun%20image%20one.jfif' },
-    { title: 'The sanctuary at SaRang Church', image: '/public%20pictures/hero%20section%20backgroun%20image%20two.jfif' },
-    { title: 'Listening and learning together', image: '/public%20pictures/hero%20section%20backgroun%20image%20three.jfif' },
-    { title: 'The 2025 Seoul General Assembly', image: '/public%20pictures/hero%20section%20backgroun%20image%20four.jfif' },
-    { title: 'Digital evangelism training in practice', image: '/public%20pictures/digital%20evangelism%20one.jfif' },
+    { title: 'A global church gathered in Seoul', image: '/public%20pictures/hero%20section%20backgroun%20image%20one.jpg' },
+    { title: 'The sanctuary at SaRang Church', image: '/public%20pictures/hero%20section%20backgroun%20image%20two.jpg' },
+    { title: 'Listening and learning together', image: '/public%20pictures/hero%20section%20backgroun%20image%20three.jpg' },
+    { title: 'The 2025 Seoul General Assembly', image: '/public%20pictures/hero%20section%20backgroun%20image%20four.jpg' },
+    { title: 'Digital evangelism training in practice', image: '/public%20pictures/digital%20evangelism%20one.jpg' },
     { title: 'Learning to communicate in digital spaces', image: '/public%20pictures/digital%20evangelism%20two.png' },
     { title: 'Building thoughtful digital ministry', image: '/public%20pictures/digital%20evangelism%20three.jpg' },
 ];
@@ -122,7 +122,7 @@ export const partners = [
     { name: 'Association of Evangelicals in Africa', type: 'Regional evangelical alliance', relationship: 'African evangelical network', website: 'https://aeafrica.org/', logo: '/public%20pictures/Association%20of%20Evangelicals%20in%20Africa.png' },
     { name: 'European Evangelical Alliance', type: 'Regional evangelical alliance', relationship: 'European evangelical network', website: 'https://www.europeanea.org/', logo: '/public%20pictures/European%20evangelical%20alliance.jpg' },
     { name: 'Evangelical Association of the Caribbean', type: 'Regional evangelical alliance', relationship: 'Caribbean evangelical network', website: 'https://www.caribbeanea.org/', logo: '/public%20pictures/Evangelical%20association%20of%20the%20carribean%202.png' },
-    { name: 'Middle East and North Africa Evangelical Alliance', type: 'Regional evangelical alliance', relationship: 'Middle East and North Africa evangelical network', website: 'https://mena-ea.org/aboutmenaea/', logo: '/public%20pictures/Middle%20east%20and%20north%20africa%20evangelical%20alliance.jfif' },
+    { name: 'Middle East and North Africa Evangelical Alliance', type: 'Regional evangelical alliance', relationship: 'Middle East and North Africa evangelical network', website: 'https://mena-ea.org/aboutmenaea/', logo: '/public%20pictures/Middle%20east%20and%20north%20africa%20evangelical%20alliance.jpg' },
     { name: 'SaRang Church, Seoul', type: 'Korean church partner', relationship: 'Seoul host church', website: 'https://www.sarang.org/', logo: '/public%20pictures/sarang%20church.png' },
     { name: 'World Evangelical Alliance', type: 'Global evangelical alliance', relationship: 'Global evangelical network', website: 'https://worldea.org/', logo: '/public%20pictures/world%20evangelical%20allianze.png' },
 ];
