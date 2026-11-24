@@ -24,9 +24,8 @@ const applicationFields = z.object({
     churchCountryCode: z.string().length(2).refine((value) => Boolean(Country.getCountryByCode(value)), 'Select a valid church country.'),
     pastorName: z.string().trim().min(2, 'Pastor or ministry leader name is required.'),
     pastorRole: z.string().trim(),
-    pastorPhone: z.string().trim().min(7, 'Pastor phone number is required.'),
-    pastorEmail: z.string().trim().email('Please provide a valid pastor email.'),
-    faithJourney: z.string().trim().min(1, 'Please describe your faith journey and church involvement.'),
+    pastorPhone: z.string().trim().refine((value) => value.length === 0 || value.length >= 7, 'Please provide a valid pastor phone number.'),
+    pastorEmail: z.string().trim().refine((value) => !value || z.string().email().safeParse(value).success, 'Please provide a valid pastor email.'),
     tiktok: z.string().trim(),
     instagram: z.string().trim(),
     youtube: z.string().trim(),
@@ -37,7 +36,6 @@ const applicationFields = z.object({
     digitalTools: z.array(z.enum(['VIDEO_EDITING', 'DESIGN', 'ADOBE', 'LIVE_STREAMING', 'WRITING_AI', 'AUDIO_EDITING', 'NONE'])).min(1, 'Select at least one option.'),
     portfolioLink: z.string().trim(),
     motivation: z.string().trim().min(20, 'Please explain why you want to join the programme.'),
-    postTrainingVision: z.string().trim().min(1, 'Please describe how you will use digital tools to share the Gospel.'),
     commit30Days: z.enum(['YES', 'NO']),
     preferredBatch: z.enum(['BATCH_A', 'BATCH_B', 'BATCH_C']),
     trainOthers: z.enum(['YES', 'UNSURE']),
@@ -57,16 +55,8 @@ export const applicationSchema = applicationFields.superRefine((value, context) 
         context.addIssue({ code: 'custom', path: ['residenceRegionCode'], message: 'Select a valid state or province for your country.' });
     }
 
-    if (value.faithJourney && (countWords(value.faithJourney) < 20 || countWords(value.faithJourney) > 200)) {
-        context.addIssue({ code: 'custom', path: ['faithJourney'], message: 'Please use 20-200 words.' });
-    }
-
     if (value.motivation && (countWords(value.motivation) < 20 || countWords(value.motivation) > 200)) {
         context.addIssue({ code: 'custom', path: ['motivation'], message: 'Please use 20-200 words.' });
-    }
-
-    if (value.postTrainingVision && (countWords(value.postTrainingVision) < 20 || countWords(value.postTrainingVision) > 200)) {
-        context.addIssue({ code: 'custom', path: ['postTrainingVision'], message: 'Please use 20-200 words.' });
     }
 
     if (value.visaDenied === 'YES' && (countWords(value.visaDenialExplanation) < 20 || countWords(value.visaDenialExplanation) > 200)) {

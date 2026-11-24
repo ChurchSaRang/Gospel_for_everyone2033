@@ -15,7 +15,7 @@ Requirements: Node.js 20.9 or newer and npm.
    npm run prisma:migrate
    ```
 
-4. To create or reset the local super-admin, set `ADMIN_EMAIL` and `ADMIN_INITIAL_PASSWORD` in `.env` (minimum 12 characters), then run:
+4. To create or reset the local super-admin, set `ADMIN_EMAIL` and `ADMIN_INITIAL_PASSWORD` in `.env` (minimum 6 characters), then run:
 
    ```powershell
    npm run db:seed
@@ -96,13 +96,33 @@ The app uses Resend for application-received, selection-notice, and batch-assign
 
 The sender in `EMAIL_FROM` must use a verified Resend domain. The API key is server-only and must never use a `NEXT_PUBLIC_` prefix.
 
-To create the first production administrator after migration, set `DATABASE_URL`, `DATABASE_URL_UNPOOLED`, `ADMIN_EMAIL`, and `ADMIN_INITIAL_PASSWORD` in your private environment, then run:
+To create or reset the production Super Admin without reseeding programme settings or batches, open PowerShell in the `Frontend` directory and run:
 
 ```powershell
-npm run db:seed:production
+function Read-PrivateValue([string]$Prompt) {
+    $secure = Read-Host -Prompt $Prompt -AsSecureString
+    $pointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
+    try {
+        return [Runtime.InteropServices.Marshal]::PtrToStringBSTR($pointer)
+    } finally {
+        [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($pointer)
+    }
+}
+
+$env:DATABASE_URL = Read-PrivateValue "Production pooled DATABASE_URL"
+$env:DATABASE_URL_UNPOOLED = Read-PrivateValue "Production direct DATABASE_URL_UNPOOLED"
+$env:ADMIN_EMAIL = Read-Host "Admin email"
+$env:ADMIN_INITIAL_PASSWORD = Read-PrivateValue "Admin password (minimum 6 characters)"
+try {
+    npm run admin:create:production
+} finally {
+    Remove-Item Env:DATABASE_URL, Env:DATABASE_URL_UNPOOLED, Env:ADMIN_EMAIL, Env:ADMIN_INITIAL_PASSWORD -ErrorAction SilentlyContinue
+}
 ```
 
-The seed command updates the configured administrator’s password using scrypt and disables the old built-in development administrator. It also seeds the programme settings and batches. Do not overwrite your SQLite `.env` with production URLs; use a separate private env file or environment variables for production seeding. Never commit production credentials or send them in chat.
+Use the production database URLs from your database provider. The command creates or resets only the specified Super Admin and disables the built-in development administrator. It does not update programme settings or batches. The password is read without echoing and the temporary environment variables are removed when the command finishes. Do not commit credentials or send them in chat.
+
+Ensure `NEXTAUTH_SECRET` is set in Vercel to a unique random value of at least 32 characters. Then sign in at `https://your-domain/admin/login`. Six characters is the minimum accepted length; for an administrator account, use a much longer unique password.
 
 ## Checks
 

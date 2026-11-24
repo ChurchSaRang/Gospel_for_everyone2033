@@ -35,8 +35,8 @@ function getSessionSecret() {
 }
 
 export function hashPassword(value: string) {
-    if (value.length < 12) {
-        throw new Error('Administrator passwords must be at least 12 characters long.');
+    if (value.length < 6) {
+        throw new Error('Administrator passwords must be at least 6 characters long.');
     }
 
     const salt = crypto.randomBytes(16);

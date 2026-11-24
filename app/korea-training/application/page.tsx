@@ -26,7 +26,6 @@ const initialState = {
     pastorRole: '',
     pastorEmail: '',
     pastorPhone: '',
-    faithJourney: '',
     passportStatus: 'YES',
     passportNumber: '',
     passportExpiry: '',
@@ -42,7 +41,6 @@ const initialState = {
     digitalTools: [] as string[],
     portfolioLink: '',
     motivation: '',
-    postTrainingVision: '',
     commit30Days: 'YES',
     preferredBatch: 'BATCH_A',
     trainOthers: 'YES',
@@ -163,6 +161,12 @@ export default function ApplicationPage() {
 
             {locationError && <p role="alert" className="mt-4 text-sm text-red-700">{locationError}</p>}
 
+            <div className="mt-8 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm leading-6 text-[#663c00]" role="note">
+                <p><span className="font-bold text-red-600">*</span> All questions marked with a red asterisk are compulsory.</p>
+                <p className="mt-2">Please provide accurate and truthful information. Applications containing falsified or misleading information may be rejected or disqualified.</p>
+                <p className="mt-2">빨간 별표(*)가 표시된 모든 항목은 필수입니다. 정확하고 사실에 근거한 정보를 제공해 주세요. 허위 또는 오해의 소지가 있는 정보를 제출할 경우 신청이 거부되거나 자격이 박탈될 수 있습니다.</p>
+            </div>
+
             <form onSubmit={handleSubmit} className="mt-8 space-y-8">
                 <div className="card-surface">
                     <h2 className="text-2xl font-bold">1. Personal &amp; contact information | 개인 및 연락처 정보</h2>
@@ -202,9 +206,8 @@ export default function ApplicationPage() {
                         <SelectField label="Church country | 교회 소재 국가" name="churchCountryCode" value={form.churchCountryCode} onChange={handleChange} options={countries.map((country) => [country.code, country.name])} placeholder="Select country" error={errors.churchCountryCode} required />
                         <TextField label="Pastor / ministry leader name | 담임목사 / 사역 책임자 성명" name="pastorName" value={form.pastorName} onChange={handleChange} error={errors.pastorName} required />
                         <TextField label="Pastor's title / role (optional) | 목회자 직책 / 역할 (선택)" name="pastorRole" value={form.pastorRole} onChange={handleChange} />
-                        <TextField label="Pastor's phone number | 목회자 전화번호" name="pastorPhone" value={form.pastorPhone} onChange={handleChange} error={errors.pastorPhone} required />
-                        <TextField label="Pastor's email address | 목회자 이메일 주소" type="email" name="pastorEmail" value={form.pastorEmail} onChange={handleChange} error={errors.pastorEmail} required />
-                        <TextAreaField label="Briefly describe your personal faith journey and involvement in your local church (20-200 words) | 개인적인 신앙 여정과 지역 교회 활동 (20-200단어)" name="faithJourney" value={form.faithJourney} onChange={handleChange} error={errors.faithJourney} required />
+                        <TextField label="Pastor's phone number (optional) | 목회자 전화번호 (선택)" name="pastorPhone" value={form.pastorPhone} onChange={handleChange} error={errors.pastorPhone} />
+                        <TextField label="Pastor's email address (optional) | 목회자 이메일 주소 (선택)" type="email" name="pastorEmail" value={form.pastorEmail} onChange={handleChange} error={errors.pastorEmail} />
                     </div>
                 </div>
 
@@ -225,10 +228,9 @@ export default function ApplicationPage() {
                 </div>
 
                 <div className="card-surface">
-                    <h2 className="text-2xl font-bold">5. Motivation &amp; vision for digital evangelism | 디지털 복음전도에 대한 동기와 비전</h2>
+                    <h2 className="text-2xl font-bold">5. Motivation for training | 연수 참여 동기</h2>
                     <div className="mt-6 grid gap-5">
                         <TextAreaField label="Why do you want to join this 1-month Digital Evangelism Training in Korea? (20-200 words) | 대한민국에서 진행되는 1개월 연수에 참여하고 싶은 이유 (20-200단어)" name="motivation" value={form.motivation} onChange={handleChange} error={errors.motivation} required />
-                        <TextAreaField label="How will you use social media, content, and digital tools to share the Gospel with Gen Z and Gen Alpha after the programme? (20-200 words) | 연수 수료 후 소셜 미디어와 디지털 도구를 활용한 복음전도 비전 (20-200단어)" name="postTrainingVision" value={form.postTrainingVision} onChange={handleChange} error={errors.postTrainingVision} required />
                     </div>
                 </div>
 

@@ -18,7 +18,8 @@
     "prisma:migrate": "prisma migrate dev --schema prisma/schema.prisma",
     "prisma:migrate:production": "prisma migrate deploy --schema prisma/postgres/schema.prisma",
     "db:seed": "npm run prisma:generate && node --env-file=.env prisma/seed.js",
-    "db:seed:production": "npm run prisma:generate:production && node --env-file=.env prisma/seed.js"
+    "db:seed:production": "npm run prisma:generate:production && node --env-file=.env prisma/seed.js",
+    "admin:create:production": "npm run prisma:generate:production && node prisma/create-admin.mjs"
   },
   "dependencies": {
     "@neon/config": "^1.14.4",

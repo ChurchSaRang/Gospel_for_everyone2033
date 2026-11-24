@@ -9,8 +9,8 @@ function hashPassword(value) {
 async function main() {
     const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
     const adminPassword = process.env.ADMIN_INITIAL_PASSWORD;
-    if (!adminEmail || !adminPassword || adminPassword.length < 12) {
-        throw new Error('Set ADMIN_EMAIL and an ADMIN_INITIAL_PASSWORD of at least 12 characters before seeding.');
+    if (!adminEmail || !adminPassword || adminPassword.length < 6) {
+        throw new Error('Set ADMIN_EMAIL and an ADMIN_INITIAL_PASSWORD of at least 6 characters before seeding.');
     }
 
     const { PrismaClient } = await import('@prisma/client');
