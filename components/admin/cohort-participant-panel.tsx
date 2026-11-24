@@ -29,7 +29,7 @@ export function CohortParticipantPanel() {
 
         async function loadCohorts() {
             try {
-                const response = await fetch('/api/admin/batches');
+                const response = await fetch('/api/admin/batches', { cache: 'no-store' });
                 const payload = await response.json();
                 if (!active) return;
                 if (!response.ok || !Array.isArray(payload.data)) {
@@ -103,6 +103,8 @@ export function CohortParticipantPanel() {
                 <p className="mt-5 text-sm text-[#526977]">Loading cohort counts…</p>
             ) : loadError ? (
                 <p role="alert" className="mt-5 text-sm text-red-700">Cohort counts could not be loaded. Refresh the page to try again.</p>
+            ) : cohorts.length === 0 ? (
+                <p role="alert" className="mt-5 text-sm text-red-700">No cohort records were returned. Refresh the page or contact an administrator.</p>
             ) : (
                 <div className="mt-5 grid gap-4 md:grid-cols-3">
                     {cohorts.map((cohort) => (
