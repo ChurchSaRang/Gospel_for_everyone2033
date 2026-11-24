@@ -36,14 +36,31 @@ export async function POST(request: Request) {
             return NextResponse.json({ message: 'Application not found.' }, { status: 404 });
         }
 
-        const updated = await prisma.application.update({
-            where: { id: application.id },
-            data: {
-                paymentStatus: status,
-                status: status === 'SUCCESSFUL' ? 'PAID' : 'SUBMITTED',
-                batchAssignmentState: status === 'SUCCESSFUL' ? 'WAITING_FOR_BATCH' : 'WAITING_FOR_PAYMENT',
-            },
-            select: { id: true, status: true, paymentStatus: true, batchAssignmentState: true },
+        if (status === 'SUCCESSFUL' && application.paymentStatus === 'SUCCESSFUL') {
+            return NextResponse.json({ message: 'This payment is already marked as paid.' }, { status: 409 });
+        }
+        if (status === 'SUCCESSFUL' && application.status !== 'APPROVED') {
+            return NextResponse.json({ message: 'Only an approved application can be marked as paid.' }, { status: 409 });
+        }
+
+        const updated = await prisma.$transaction(async (transaction) => {
+            const result = await transaction.application.update({
+                where: { id: application.id },
+                data: {
+                    paymentStatus: status,
+                    status: status === 'SUCCESSFUL' ? 'PAID' : 'SUBMITTED',
+                    batchAssignmentState: status === 'SUCCESSFUL' ? 'WAITING_FOR_BATCH' : 'WAITING_FOR_PAYMENT',
+                },
+                select: { id: true, status: true, paymentStatus: true, batchAssignmentState: true },
+            });
+            await transaction.auditLog.create({
+                data: {
+                    actor: authorization.session?.email,
+                    action: status === 'SUCCESSFUL' ? 'PAYMENT_MANUALLY_CONFIRMED' : 'PAYMENT_MANUALLY_MARKED_FAILED',
+                    details: JSON.stringify({ applicationId: application.id, method: 'receipt_review' }),
+                },
+            });
+            return result;
         });
 
         return NextResponse.json({

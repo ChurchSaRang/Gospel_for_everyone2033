@@ -1,7 +1,7 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import { prisma } from '@/lib/prisma';
 
-const providerName = 'smtp:gmail';
+const providerName = 'resend';
 
 type ApplicantName = {
     firstName: string;
@@ -49,8 +49,8 @@ The Gospel of our Lord Jesus Christ is for everyone!
 Warm regards,
 The Admissions Secretariat
 The Gospel for Everyone 2033 Initiative
-https://www.gospelforeveryone2033.com
-support@gospelforeveryone2033.com`;
+https://www.gospelforeveryonemovement.com
+support@gospelforeveryonemovement.com`;
         const html = `<p>Dear <strong>${fullName}</strong>,</p>
 <p>Thank you for submitting your application for the <strong>Digital Evangelism Training Program in South Korea</strong>, organized in support of <strong>"The Gospel for Everyone by 2033"</strong> movement.</p>
 <p>We have successfully received your details. Our admissions and screening committee is currently reviewing applications for the upcoming training batches.</p>
@@ -60,7 +60,7 @@ support@gospelforeveryone2033.com`;
 <p><em>"Go therefore and make disciples of all nations..."</em> - Matthew 28:19</p>
 <p><strong>The Gospel of our Lord Jesus Christ is for everyone!</strong></p>
 <p>Warm regards,<br><strong>The Admissions Secretariat</strong><br><em>The Gospel for Everyone 2033 Initiative</em></p>
-<p><a href="https://www.gospelforeveryone2033.com">www.gospelforeveryone2033.com</a><br><a href="mailto:support@gospelforeveryone2033.com">support@gospelforeveryone2033.com</a></p>`;
+<p><a href="https://www.gospelforeveryonemovement.com">www.gospelforeveryonemovement.com</a><br><a href="mailto:support@gospelforeveryonemovement.com">support@gospelforeveryonemovement.com</a></p>`;
         return { subject, text, html };
     }
 
@@ -74,7 +74,7 @@ Congratulations! We are delighted to inform you that your application for the Di
 You are taking a pivotal step toward equipping yourself to reach the next generation with the Gospel of Jesus Christ as part of "The Gospel for Everyone by 2033" movement.
 
 Next Steps to Secure Your Spot
-1. Visit https://www.gospelforeveryone2033.com
+1. Visit https://www.gospelforeveryonemovement.com
 2. Click on "Check Application Status / Pay Support Fee"
 3. Enter your unique Confirmation Code: ${confirmationCode}
 4. Complete the required $500 USD participant support fee.
@@ -90,13 +90,13 @@ Thank you for answering the call to serve. Together, we are taking the Gospel fo
 Warm regards,
 The Admissions Committee
 The Gospel for Everyone 2033 Initiative
-https://www.gospelforeveryone2033.com
-support@gospelforeveryone2033.com`;
+https://www.gospelforeveryonemovement.com
+support@gospelforeveryonemovement.com`;
         const html = `<p>Dear <strong>${fullName}</strong>,</p>
 <p>Congratulations! We are delighted to inform you that your application for the <strong>Digital Evangelism Training Program in South Korea</strong> has been shortlisted and selected by the screening committee.</p>
 <p>You are taking a pivotal step toward equipping yourself to reach the next generation with the Gospel of Jesus Christ as part of <strong>"The Gospel for Everyone by 2033"</strong> movement.</p>
 <h3>Next Steps to Secure Your Spot</h3>
-<ol><li>Visit <a href="https://www.gospelforeveryone2033.com">www.gospelforeveryone2033.com</a>.</li><li>Click on <strong>"Check Application Status / Pay Support Fee"</strong>.</li><li>Enter your unique Confirmation Code: <strong>${safeCode}</strong>.</li><li>Complete the required <strong>$500 USD</strong> participant support fee.</li></ol>
+<ol><li>Visit <a href="https://www.gospelforeveryonemovement.com">www.gospelforeveryonemovement.com</a>.</li><li>Click on <strong>"Check Application Status / Pay Support Fee"</strong>.</li><li>Enter your unique Confirmation Code: <strong>${safeCode}</strong>.</li><li>Complete the required <strong>$500 USD</strong> participant support fee.</li></ol>
 <h3>Important Note on Program Support</h3>
 <p>The $500 participant support fee works alongside grants and donations provided by SaRang Community Church, the World Evangelical Alliance, and movement partners. It helps cover international flight arrangements, accommodation, daily meals, specialized training materials, software licenses, and visa processing support. Personal expenses outside the core training scope remain the participant's responsibility.</p>
 <h3>Deadlines &amp; Batch Processing</h3>
@@ -104,7 +104,7 @@ support@gospelforeveryone2033.com`;
 <p>You can log into the portal at any time using your confirmation code to track your travel status and updates.</p>
 <p>Thank you for answering the call to serve. Together, we are taking the Gospel for Everyone everywhere!</p>
 <p>Warm regards,<br><strong>The Admissions Committee</strong><br><em>The Gospel for Everyone 2033 Initiative</em></p>
-<p><a href="https://www.gospelforeveryone2033.com">www.gospelforeveryone2033.com</a><br><a href="mailto:support@gospelforeveryone2033.com">support@gospelforeveryone2033.com</a></p>`;
+<p><a href="https://www.gospelforeveryonemovement.com">www.gospelforeveryonemovement.com</a><br><a href="mailto:support@gospelforeveryonemovement.com">support@gospelforeveryonemovement.com</a></p>`;
         return { subject, text, html };
     }
 
@@ -126,8 +126,8 @@ Your place has been secured for the next available cohort in the programme. The 
 Warm regards,
 The Admissions Secretariat
 The Gospel for Everyone 2033 Initiative
-https://www.gospelforeveryone2033.com
-support@gospelforeveryone2033.com`;
+https://www.gospelforeveryonemovement.com
+support@gospelforeveryonemovement.com`;
         const html = `<p>Dear <strong>${fullName}</strong>,</p>
 <p>Your payment has been confirmed and your batch assignment is now final.</p>
 <p><strong>Confirmation Code:</strong> ${safeCode}</p>
@@ -135,7 +135,7 @@ support@gospelforeveryone2033.com`;
 <p><strong>Batch Number:</strong> ${safeNumber}</p>
 <p>Your place has been secured for the next available cohort in the programme. The Admissions Team will continue with visa preparation, travel guidance, and orientation support.</p>
 <p>Warm regards,<br><strong>The Admissions Secretariat</strong><br><em>The Gospel for Everyone 2033 Initiative</em></p>
-<p><a href="https://www.gospelforeveryone2033.com">www.gospelforeveryone2033.com</a><br><a href="mailto:support@gospelforeveryone2033.com">support@gospelforeveryone2033.com</a></p>`;
+<p><a href="https://www.gospelforeveryonemovement.com">www.gospelforeveryonemovement.com</a><br><a href="mailto:support@gospelforeveryonemovement.com">support@gospelforeveryonemovement.com</a></p>`;
         return { subject, text, html };
     }
 
@@ -164,30 +164,24 @@ export async function sendApplicantEmail({
     let errorMessage: string | undefined;
 
     try {
+        const apiKey = process.env.RESEND_API_KEY?.trim();
         const from = process.env.EMAIL_FROM?.trim();
-        const user = process.env.EMAIL_USER?.trim();
-        const password = process.env.EMAIL_PASS;
+        const replyTo = process.env.EMAIL_REPLY_TO?.trim();
+        if (!apiKey) throw new Error('RESEND_API_KEY is not configured in the server environment.');
         if (!from) throw new Error('EMAIL_FROM is not configured in the server environment.');
-        if (!user) throw new Error('EMAIL_USER is not configured in the server environment.');
-        if (!password) throw new Error('EMAIL_PASS is not configured. Add a Gmail app password to the server environment.');
 
-        const transporter = nodemailer.createTransport({
-            host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-            port: Number(process.env.EMAIL_PORT || 587),
-            secure: Number(process.env.EMAIL_PORT || 587) === 465,
-            connectionTimeout: 10000,
-            greetingTimeout: 10000,
-            socketTimeout: 20000,
-            auth: { user, pass: password },
-        });
-
-        await transporter.sendMail({
+        const resend = new Resend(apiKey);
+        const { data, error } = await resend.emails.send({
             from,
-            to: recipient,
+            to: [recipient],
             subject: message.subject,
             text: message.text,
             html: message.html,
-        });
+            ...(replyTo ? { replyTo } : {}),
+        }, { idempotencyKey: `${type}/${applicationId}` });
+
+        if (error) throw new Error(error.message);
+        if (!data?.id) throw new Error('Resend did not confirm the email send.');
         status = 'SENT';
     } catch (error) {
         errorMessage = error instanceof Error ? error.message : 'Email delivery failed.';

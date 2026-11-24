@@ -62,7 +62,7 @@ export async function POST(request: Request) {
         return NextResponse.json({
             message: result.sent
                 ? 'Application approved and selection notice sent.'
-                : 'Application approved, but the selection notice could not be sent. Configure Gmail SMTP and retry.',
+                : 'Application approved, but the selection notice could not be sent. Configure Resend and retry.',
             data: { status: 'APPROVED', emailSent: result.sent },
         });
     } catch (error) {

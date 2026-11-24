@@ -95,13 +95,17 @@ function calculateAge(dob: string) {
 }
 
 export async function GET() {
-    const authorization = await authorizeAdminApi(['APPLICATION_REVIEWER']);
+    const authorization = await authorizeAdminApi(['APPLICATION_REVIEWER', 'FINANCE_OFFICER']);
     if (authorization.response) return authorization.response;
 
     const applications = await prisma.application.findMany({
         include: {
             applicant: true,
-            confirmationCodes: true,
+            confirmationCodes: {
+                where: { revokedAt: null },
+                orderBy: { createdAt: 'desc' },
+                take: 1,
+            },
         },
         orderBy: {
             createdAt: 'desc',
@@ -109,6 +113,8 @@ export async function GET() {
     });
 
     return NextResponse.json({
+        canMarkPaymentPaid: authorization.session?.role === 'FINANCE_OFFICER' || authorization.session?.role === 'SUPER_ADMIN',
+        canManageCohortParticipants: authorization.session?.role === 'SUPER_ADMIN',
         data: applications.map((application) => ({
             id: application.id,
             reference: application.reference,

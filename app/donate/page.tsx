@@ -10,11 +10,12 @@ export default function DonatePage() {
             </header>
             <section className="mt-9 grid gap-5 lg:grid-cols-[1fr_0.75fr]">
                 <div className="border border-[#dce5eb] bg-white p-7 sm:p-9">
-                    <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#f07835]">Giving information</p>
-                    <h2 className="font-display mt-4 text-3xl text-[#122d42]">Ask before you give.</h2>
-                    <p className="mt-4 max-w-2xl leading-7 text-[#526977]">Online donation processing is not currently enabled on this page. Contact the movement team to receive confirmed giving channels and any relevant documentation. Do not send funds to an account shared through an unofficial message.</p>
+                    <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#f07835]">Secure online giving</p>
+                    <h2 className="font-display mt-4 text-3xl text-[#122d42]">Give through PayPal.</h2>
+                    <p className="mt-4 max-w-2xl leading-7 text-[#526977]">Use the button below to make a donation through PayPal. This donation link is separate from the training support fee payment.</p>
                     <div className="mt-6 flex flex-wrap gap-3">
-                        <a href="mailto:support@gospelforeveryonemovement.com?subject=Giving%20to%20Gospel%20for%20Everyone" className="btn-primary">Request giving details</a>
+                        <a href="https://www.paypal.com/ncp/payment/7SXTX6PX3HPGU" target="_blank" rel="noopener noreferrer" className="btn-primary">Donate with PayPal</a>
+                        <a href="mailto:support@gospelforeveryonemovement.com?subject=Giving%20to%20Gospel%20for%20Everyone" className="btn-secondary">Ask a question</a>
                         <Link href="/korea-training/status" className="btn-secondary">Check application status / pay fee</Link>
                     </div>
                 </div>

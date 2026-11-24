@@ -21,6 +21,8 @@ export default function AdminApplicationsPage() {
     const [loading, setLoading] = useState(true);
     const [actionId, setActionId] = useState('');
     const [message, setMessage] = useState('');
+    const [canMarkPaymentPaid, setCanMarkPaymentPaid] = useState(false);
+    const [canManageCohortParticipants, setCanManageCohortParticipants] = useState(false);
     const [search, setSearch] = useState('');
     const [countryFilter, setCountryFilter] = useState('');
     const [statusFilter, setStatusFilter] = useState('');
@@ -33,6 +35,8 @@ export default function AdminApplicationsPage() {
                 const res = await fetch('/api/applications');
                 const payload = await res.json();
                 setApplications(payload.data ?? []);
+                setCanMarkPaymentPaid(payload.canMarkPaymentPaid === true);
+                setCanManageCohortParticipants(payload.canManageCohortParticipants === true);
             } catch (error) {
                 console.error('Failed to load applications', error);
                 setApplications([]);
@@ -59,6 +63,8 @@ export default function AdminApplicationsPage() {
                 const refreshed = await fetch('/api/applications');
                 const refreshedPayload = await refreshed.json();
                 setApplications(refreshedPayload.data ?? []);
+                setCanMarkPaymentPaid(refreshedPayload.canMarkPaymentPaid === true);
+                setCanManageCohortParticipants(refreshedPayload.canManageCohortParticipants === true);
             }
         } catch {
             setMessage('Could not complete the approval action. Please try again.');
@@ -82,9 +88,41 @@ export default function AdminApplicationsPage() {
                 const refreshed = await fetch('/api/applications');
                 const refreshedPayload = await refreshed.json();
                 setApplications(refreshedPayload.data ?? []);
+                setCanMarkPaymentPaid(refreshedPayload.canMarkPaymentPaid === true);
+                setCanManageCohortParticipants(refreshedPayload.canManageCohortParticipants === true);
             }
         } catch {
             setMessage('Could not reject the application. Please try again.');
+        } finally {
+            setActionId('');
+        }
+    }
+
+    async function markPaymentPaid(application: ApplicationRow) {
+        const code = application.confirmationCode ? ` (ID: ${application.confirmationCode})` : '';
+        if (!window.confirm(`Confirm that you reviewed the receipt and verified the funds for ${application.fullName}${code}?`)) {
+            return;
+        }
+
+        setActionId(application.id);
+        setMessage('');
+        try {
+            const response = await fetch('/api/admin/payments/confirm', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ applicationId: application.id, status: 'SUCCESSFUL' }),
+            });
+            const payload = await response.json();
+            setMessage(payload.message || 'Payment confirmation processed.');
+            if (response.ok) {
+                const refreshed = await fetch('/api/applications');
+                const refreshedPayload = await refreshed.json();
+                setApplications(refreshedPayload.data ?? []);
+                setCanMarkPaymentPaid(refreshedPayload.canMarkPaymentPaid === true);
+                setCanManageCohortParticipants(refreshedPayload.canManageCohortParticipants === true);
+            }
+        } catch {
+            setMessage('Could not mark the payment as paid. Please try again.');
         } finally {
             setActionId('');
         }
@@ -95,7 +133,7 @@ export default function AdminApplicationsPage() {
     const paymentStatuses = [...new Set(applications.map((application) => application.paymentStatus))].sort();
     const normalizedSearch = search.trim().toLowerCase();
     const filteredApplications = applications.filter((application) => (
-        (!normalizedSearch || application.fullName.toLowerCase().includes(normalizedSearch) || application.reference.toLowerCase().includes(normalizedSearch))
+        (!normalizedSearch || application.fullName.toLowerCase().includes(normalizedSearch) || application.reference.toLowerCase().includes(normalizedSearch) || application.confirmationCode?.toLowerCase().includes(normalizedSearch))
         && (!countryFilter || application.country === countryFilter)
         && (!statusFilter || application.status === statusFilter)
         && (!paymentFilter || application.paymentStatus === paymentFilter)
@@ -121,13 +159,15 @@ export default function AdminApplicationsPage() {
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#075b8f]">Applications</p>
             <h1 className="section-title mt-3">Application review</h1>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-[#526977]">Search applicants, narrow the list by country or status, and sort records for review.</p>
-            <div className="mt-7">
-                <CohortParticipantPanel />
-            </div>
+            {canManageCohortParticipants && (
+                <div className="mt-7">
+                    <CohortParticipantPanel />
+                </div>
+            )}
             {message && <p role="status" className="mt-4 rounded-xl border border-[#dce5eb] bg-white p-3 text-sm text-[#122d42]">{message}</p>}
             <section aria-label="Search and filter applicants" className="mt-7 grid gap-3 rounded-lg border border-[#dce5eb] bg-white p-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
                 <label className="text-xs font-semibold text-[#526977]">
-                    Search name or reference
+                    Search name, reference or confirmation ID
                     <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Type to search" className="mt-1.5 h-10 w-full rounded-md border border-[#b8cbd7] bg-white px-3 text-sm text-[#122d42]" />
                 </label>
                 <label className="text-xs font-semibold text-[#526977]">
@@ -197,7 +237,23 @@ export default function AdminApplicationsPage() {
                                         <td className="p-3">{item.country || '—'}</td>
                                         <td className="p-3">{item.preferredBatch || 'No preference'}</td>
                                         <td className="p-3">{item.status}</td>
-                                        <td className="p-3">{item.paymentStatus}</td>
+                                        <td className="p-3">
+                                            <span>{item.paymentStatus}</span>
+                                            {canMarkPaymentPaid && item.status === 'APPROVED' && item.paymentStatus !== 'SUCCESSFUL' && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => markPaymentPaid(item)}
+                                                    disabled={actionId === item.id}
+                                                    title="Mark paid after verifying the receipt and funds"
+                                                    aria-label={`Mark payment as paid for ${item.fullName}`}
+                                                    className="ml-2 inline-flex h-8 w-8 items-center justify-center rounded-full border border-emerald-200 text-emerald-700 hover:bg-emerald-50 disabled:opacity-50"
+                                                >
+                                                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="m5 12 4 4L19 6" />
+                                                    </svg>
+                                                </button>
+                                            )}
+                                        </td>
                                         <td className="p-3">{item.reference}</td>
                                         <td className="p-3">
                                             <div className="flex flex-wrap gap-2">
