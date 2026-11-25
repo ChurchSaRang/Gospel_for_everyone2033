@@ -74,10 +74,9 @@ Congratulations! We are delighted to inform you that your application for the Di
 You are taking a pivotal step toward equipping yourself to reach the next generation with the Gospel of Jesus Christ as part of "The Gospel for Everyone by 2033" movement.
 
 Next Steps to Secure Your Spot
-1. Visit https://www.gospelforeveryonemovement.com
-2. Click on "Check Application Status / Pay Support Fee"
+1. Visit https://www.gospelforeveryonemovement.com/korea-training/status
 3. Enter your unique Confirmation Code: ${confirmationCode}
-4. Complete the required $500 USD participant support fee.
+4. Verify and Complete the required $500 USD participant support fee.
 
 The $500 participant support fee works alongside grants and donations provided by SaRang Community Church, the World Evangelical Alliance, and movement partners. It helps cover international flight arrangements, accommodation, daily meals, specialized training materials, software licenses, and visa processing support. Personal expenses outside the core training scope remain the participant's responsibility.
 
